@@ -74,7 +74,7 @@ services:
     command: --allow-http --no-auth
     networks:
       - full_stack
-    volumes:
+    ## volumes:
       ## - "${PROJECT_ROOT}/html-01/app:/home/coder/project/html-01"
       ## - "${PROJECT_ROOT}/html-02/app:/home/coder/project/html-02"
       ## - "${PROJECT_ROOT}/remote-02/app:/home/coder/project/remote-02"
@@ -85,7 +85,6 @@ services:
   ## The reverse proxy
   ##
   ## http://localhost:10080
-  proxy:
   proxy:
     image: hal313/reverse-proxy:latest
     container_name: reverse-proxy
