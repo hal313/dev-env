@@ -1,47 +1,40 @@
 import { generateDockerComposeFile } from './scripts/docker-generator.js';
-import { configureEnvironment } from './scripts/configurator.js';
+import { configureEnvironment, parseEnvironmentFromQueryString } from './scripts/configurator.js';
 import { ALL_APPS } from './scripts/constants.js';
+import { generateBashScript } from './scripts/bash-generator.js';
 
 $(() => {
 
   // Pre-select config
   (($) => {
-    let descriptor = {
-      apps: {
-        use: [],
-        dev: []
-      },
-      port: $('#port').val()
-    }
 
     // Parse the URL query string into an environment descriptor
-    let queryString = location.search.substring(1);
+    let descriptor = parseEnvironmentFromQueryString(location.search.substring(1), $('#port').val());
 
-    queryString.split('&').forEach(specifier => {
-      let [type, value] = specifier.split('=');
-
-      switch (type) {
-        case 'port':
-          descriptor.port = Number.parseInt(value, 10);
-          break;
-        case 'use':
-        case 'dev':
-          if (!descriptor.apps[type].includes(value)) {
-            descriptor.apps[type].push(value);
-          }
-          break;
-        default:
-          console.log(`Unknown descriptor type "${type}" (value=${value})`);
-      }
-    });
-
+    // Populate the settings
     configureEnvironment($, descriptor);
   })(jQuery);
 
 
-  $('#js-generate').click(event => {
+  $('#js-generate-docker').click(event => {
     event.preventDefault();
 
+    let definition = generateDefinition();
+    let composeFile = generateDockerComposeFile(definition);
+
+    download(composeFile, 'docker-compose.yml');
+  });
+
+  $('#js-generate-bash').click(event => {
+    event.preventDefault();
+
+    let definition = generateDefinition();
+    let bashFile = generateBashScript(definition);
+
+    download(bashFile, 'start-env.sh');
+  });
+
+  let generateDefinition = () => {
     let selectedUseApps = [];
     let selectedDevApps = [];
 
@@ -55,16 +48,19 @@ $(() => {
       }
     });
 
-    let composeFile = generateDockerComposeFile({
+    return {
       apps: {
         use: selectedUseApps,
         dev: selectedDevApps
-      }
-    });
+      },
+      port: $('#port').val()
+    };
+  };
 
+  let download = (content, filename) => {
     let downloadElement = document.createElement('a');
-    downloadElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(composeFile));
-    downloadElement.setAttribute('download', 'docker-compose.yml');
+    downloadElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+    downloadElement.setAttribute('download', filename);
 
     downloadElement.style.display = 'none';
     document.body.appendChild(downloadElement);
@@ -72,6 +68,6 @@ $(() => {
     downloadElement.click();
 
     document.body.removeChild(downloadElement);
-  });
+  };
 
 });

@@ -71,7 +71,7 @@ services:
     networks:
       - full_stack
     ports:
-      - ${$('#port').val()}:80
+      - ${definition.port}:80
 `;
 
 

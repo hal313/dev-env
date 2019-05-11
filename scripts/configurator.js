@@ -1,5 +1,37 @@
 import { ALL_APPS } from './constants.js';
 
+export function parseEnvironmentFromQueryString(queryString, defaultPort) {
+    let descriptor = {
+        apps: {
+          use: [],
+          dev: []
+        },
+        port: defaultPort
+      }
+
+    queryString.split('&').forEach(specifier => {
+        let [type, value] = specifier.split('=');
+
+        switch (type) {
+          case 'port':
+            descriptor.port = Number.parseInt(value, 10);
+            break;
+          case 'use':
+          case 'dev':
+            if (!descriptor.apps[type].includes(value)) {
+              descriptor.apps[type].push(value);
+            }
+            break;
+          default:
+            if (!!type) {
+              console.log(`Unknown descriptor type "${type}" (value=${value})`);
+            }
+        }
+    });
+
+    return descriptor;
+}
+
 export function configureEnvironment($, descriptor) {
 
     // Set the port
