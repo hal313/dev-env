@@ -1,6 +1,6 @@
-import { generateDockerComposeFile } from './docker-generator.js';
-import { configureEnvironment } from './configurator.js';
-import { ALL_APPS } from './constants.js';
+import { generateDockerComposeFile } from './scripts/docker-generator.js';
+import { configureEnvironment } from './scripts/configurator.js';
+import { ALL_APPS } from './scripts/constants.js';
 
 $(() => {
 
