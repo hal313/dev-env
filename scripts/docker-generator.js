@@ -1,3 +1,5 @@
+import { ALL_APPS } from './constants.js';
+
 let getContainerName = app => {
   let services = ['echo', 'reverse', 'uppercase'];
   return isHTML(app) ? app : `api-${services[getServiceNumber(app)-1]}-${app}`;
@@ -12,6 +14,18 @@ let generateUseOnlyTemplate = app => {
     return `
   ${appId}:
     image: hal313/${app}:latest
+    container_name: ${getContainerName(app)}
+    networks:
+      - full_stack
+`;
+}
+
+// The reverse proxy is built with all service names and will fail if a service is missing; this serves as a no op
+let generateNoopTemplate = app => {
+  let appId = app.split('-').join('');
+  return `
+  ${appId}:
+    image: httpd:2.4.39
     container_name: ${getContainerName(app)}
     networks:
       - full_stack
@@ -81,6 +95,13 @@ services:
         composeFile += generateUseAndDevTemplate(app);
     } else {
         composeFile += generateUseOnlyTemplate(app);
+    }
+  });
+
+  // Add no-op servies
+  ALL_APPS.forEach(app => {
+    if (!selectedUseApps.includes(app)) {
+      composeFile += generateNoopTemplate(app);
     }
   });
 
