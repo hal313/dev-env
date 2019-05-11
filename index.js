@@ -1,118 +1,77 @@
+import { generateDockerComposeFile } from './docker-generator.js';
+import { configureEnvironment } from './configurator.js';
+import { ALL_APPS } from './constants.js';
+
 $(() => {
 
-    $('#js-generate').click(event => {
-        event.preventDefault();
+  // Pre-select config
+  (($) => {
+    let descriptor = {
+      apps: {
+        use: [],
+        dev: []
+      },
+      port: $('#port').val()
+    }
 
-        let apps = ['html-01', 'html-02', 'html-03', 'remote-01', 'remote-02', 'remote-03'];
+    // Parse the URL query string into an environment descriptor
+    let queryString = location.search.substring(1);
 
-        let selectedUseApps = [];
-        let selectedDevApps = [];
+    queryString.split('&').forEach(specifier => {
+      let [type, value] = specifier.split('=');
 
-        // Find the selected apps to use and develop
-        apps.forEach(app => {
-            if (!!$(`#${app}-use`).prop('checked')) {
-                selectedUseApps.push(app);
-            }
-            if (!!$(`#${app}-dev`).prop('checked')) {
-                selectedDevApps.push(app);
-            }
-        });
-
-        let composeFile = `
-version: '3.5'
-
-networks:
-  full_stack:
-    name: full_stack
-
-services:
-
-  proxy:
-    image: hal313/reverse-proxy:latest
-    container_name: reverse-proxy
-    networks:
-      - full_stack
-    ports:
-      - ${$('#port').val()}:80
-`;
-
-        // HTML and REMOTE
-        selectedUseApps.forEach(app => {
-            if (selectedDevApps.includes(app)) {
-                composeFile += generateUseAndDevTemplate(app);
-            } else {
-                composeFile += generateUseOnlyTemplate(app);
-            }
-        });
-
-        // IDE
-        composeFile += generateIDETemplate(selectedDevApps);
-
-        let downloadElement = document.createElement('a');
-        downloadElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(composeFile));
-        downloadElement.setAttribute('download', 'docker-compose.yml');
-
-        downloadElement.style.display = 'none';
-        document.body.appendChild(downloadElement);
-
-        downloadElement.click();
-
-        document.body.removeChild(downloadElement);
+      switch (type) {
+        case 'port':
+          descriptor.port = Number.parseInt(value, 10);
+          break;
+        case 'use':
+        case 'dev':
+          if (!descriptor.apps[type].includes(value)) {
+            descriptor.apps[type].push(value);
+          }
+          break;
+        default:
+          console.log(`Unknown descriptor type "${type}" (value=${value})`);
+      }
     });
 
-    let getContainerName = app => {
-        let services = ['echo', 'reverse', 'uppercase'];
-        console.log('service number', getServiceNumber(app));
-        return isHTML(app) ? app : `api-${services[getServiceNumber(app)-1]}-${app}`;
-    }
+    configureEnvironment($, descriptor);
+  })(jQuery);
 
-    let generateUseOnlyTemplate = app => {
-        let appId = app.split('-').join('');
-        return `
-  ${appId}:
-    image: hal313/${app}:latest
-    container_name: ${getContainerName(app)}
-    networks:
-      - full_stack
-`;
-    }
 
-    let isHTML = app => 'html' === app.split('-')[0];
-    let getServiceNumber = app => Number.parseInt(app.split('-')[1], 10);
+  $('#js-generate').click(event => {
+    event.preventDefault();
 
-    let generateUseAndDevTemplate = (app) => {
-        let appId = app.split('-').join('');
-        // Set the path based on the type (html or remote)
-        let path = isHTML(app) ? '/usr/local/apache2/htdocs' : '/var/www/html';
-        return `
-  ${appId}:
-    image: hal313/${app}:latest
-    container_name: ${getContainerName(app)}
-    networks:
-      - full_stack
-    volumes:
-      - "\${PROJECT_ROOT}/${app}/app:${path}"
-`;
-    }
+    let selectedUseApps = [];
+    let selectedDevApps = [];
 
-    let generateIDETemplate = (appsToMap) => {
-        let volumes = '';
-        if (!!appsToMap && !!appsToMap.length) {
-            volumes += `    volumes:\n`;
-            appsToMap.forEach(app => {
-                volumes += `      - "\${PROJECT_ROOT}/${app}/app:/home/coder/project/${app}"\n`;
-            });
-        }
-        return `
-  ide:
-    image: codercom/code-server:1.621
-    container_name: ide
-    command: --allow-http --no-auth
-    networks:
-      - full_stack
-${volumes}
-`;
-    }
+    // Find the selected apps to use and develop
+    ALL_APPS.forEach(app => {
+      if (!!$(`#${app}-use`).prop('checked')) {
+        selectedUseApps.push(app);
+      }
+      if (!!$(`#${app}-dev`).prop('checked')) {
+        selectedDevApps.push(app);
+      }
+    });
 
+    let composeFile = generateDockerComposeFile({
+      apps: {
+        use: selectedUseApps,
+        dev: selectedDevApps
+      }
+    });
+
+    let downloadElement = document.createElement('a');
+    downloadElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(composeFile));
+    downloadElement.setAttribute('download', 'docker-compose.yml');
+
+    downloadElement.style.display = 'none';
+    document.body.appendChild(downloadElement);
+
+    downloadElement.click();
+
+    document.body.removeChild(downloadElement);
+  });
 
 });
