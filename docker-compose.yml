@@ -77,7 +77,10 @@ services:
     ## volumes:
       ## - "${PROJECT_ROOT}/html-01/app:/home/coder/project/html-01"
       ## - "${PROJECT_ROOT}/html-02/app:/home/coder/project/html-02"
+      ## - "${PROJECT_ROOT}/html-03/app:/home/coder/project/html-03"
+      ## - "${PROJECT_ROOT}/remote-01/app:/home/coder/project/remote-01"
       ## - "${PROJECT_ROOT}/remote-02/app:/home/coder/project/remote-02"
+      ## - "${PROJECT_ROOT}/remote-03/app:/home/coder/project/remote-03"
       ## TODO: Uncomment this line to persist VS Code settings (such as extensions)
       ## - "${VSCODE_SETTINGS_DIR}:/home/coder/.local"
 
