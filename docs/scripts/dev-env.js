@@ -1,7 +1,7 @@
-import { generateDockerComposeFile } from './scripts/docker-generator.js';
-import { configureEnvironment, parseEnvironmentFromQueryString } from './scripts/configurator.js';
-import { ALL_APPS } from './scripts/constants.js';
-import { generateBashScript } from './scripts/bash-generator.js';
+import { generateDockerComposeFile } from './docker-generator.js';
+import { configureEnvironment, parseEnvironmentFromQueryString } from './configurator.js';
+import { ALL_APPS } from './constants.js';
+import { generateBashScript } from './bash-generator.js';
 
 $(() => {
 
