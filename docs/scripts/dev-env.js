@@ -5,7 +5,7 @@ import { generateBashScript } from './bash-generator.js';
 
 $(() => {
 
-  // Pre-select config
+  // Pre-select config (jQuery is passed in)
   (($) => {
 
     // Parse the URL query string into an environment descriptor
