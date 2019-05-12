@@ -1,3 +1,6 @@
+## This is a basic template that the docker generator was based off of; it exists here
+## for reference only
+
 version: '3.5'
 
 ## Creates a full stack development environment containing:
