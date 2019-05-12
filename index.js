@@ -9,29 +9,51 @@ $(() => {
   (($) => {
 
     // Parse the URL query string into an environment descriptor
-    let descriptor = parseEnvironmentFromQueryString(location.search.substring(1), $('#port').val());
+    let defaults = {
+      port: $('#port').val(),
+      networkName: $('#network-name').val(),
+      containerPrefix: $('#container-prefix').val(),
+      containerSuffix: $('#container-suffix').val()
+    };
+    let descriptor = parseEnvironmentFromQueryString(location.search.substring(1), defaults);
 
     // Populate the settings
     configureEnvironment($, descriptor);
   })(jQuery);
 
-
-  $('#js-generate-docker').click(event => {
+  // Handle downloads
+  $('.js-download').click(event => {
     event.preventDefault();
 
     let definition = generateDefinition();
-    let composeFile = generateDockerComposeFile(definition);
+    let dockerComposeFileContent = generateDockerComposeFile(definition);
+    let bashFileContent = generateBashScript(definition);
+    let downloadTarget = $(event.target).data('download-target');
+    let tabTarget = $(event.target).data('tab-target');
 
-    download(composeFile, 'docker-compose.yml');
-  });
+    // Populate the script contents
+    $('#docker-compose-yml').html(dockerComposeFileContent);
+    $('#bash-script').html(bashFileContent);
+    $('#macos-script').html(bashFileContent);
 
-  $('#js-generate-bash').click(event => {
-    event.preventDefault();
+    // Show the generated code container
+    $('#js-generated-content-container').show();
 
-    let definition = generateDefinition();
-    let bashFile = generateBashScript(definition);
+    // Select the correct tab
+    $(`#${tabTarget}`).tab('show');
 
-    download(bashFile, 'start-env.sh');
+    // Send the content
+    switch (downloadTarget) {
+      case 'docker':
+        download(dockerComposeFileContent, 'docker-compose.yml');
+        break;
+      case 'bash':
+        download(bashFileContent, 'linux-start-sde.sh');
+        break;
+      case 'macos':
+        download(bashFileContent, 'macos-start-sde.sh');
+        break;
+    }
   });
 
   let generateDefinition = () => {
@@ -53,7 +75,10 @@ $(() => {
         use: selectedUseApps,
         dev: selectedDevApps
       },
-      port: $('#port').val()
+      port: $('#port').val(),
+      networkName: $('#network-name').val(),
+      containerPrefix: $('#container-prefix').val(),
+      containerSuffix: $('#container-suffix').val()
     };
   };
 

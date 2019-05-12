@@ -124,19 +124,83 @@
 
             <form>
                 <div class="form-group">
-                    <label for="port">Port</label>
+                    <label for="port">Web Port</label>
                     <input type="number" class="form-control" id="port" placeholder="Port" value="10080">
                 </div>
 
-                <div>
-                    <button class="btn btn-primary" type="submit" id="js-generate-docker"><i class="icon docker-icon"></i>Docker Definition</button>
-                    <button class="btn btn-primary" type="submit" id="js-generate-bash"><i class="icon tux-icon"></i>Bash Script</button>
+                <!-- "Advanced" section -->
+                <p>
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#advanced" aria-expanded="false" aria-controls="advanced">
+                        Advanced
+                    </button>
+                </p>
+                <div class="collapse" id="advanced">
+                    <div class="card card-body">
+
+                        <div class="form-group">
+                            <label for="network-name">Network Name</label>
+                            <input type="text" class="form-control" id="network-name" placeholder="Network Name" value="sde">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="container-prefix">Container Prefix</label>
+                            <input type="text" class="form-control" id="container-prefix" placeholder="Container Prefix" value="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="container-suffix">Container Suffix</label>
+                            <input type="text" class="form-control" id="container-suffix" placeholder="Container Suffix" value="">
+                        </div>
+                    </div>
                 </div>
+
+                <p>
+                    <div class="card">
+
+                        <div class="card-header">
+                            Download
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title">Download Environment</h5>
+                            <p class="card-text">Download the <code>docker-compose.yml</code> or scripts for your system.</p>
+                            <div>
+                                <button class="btn btn-primary col-sm-3 js-download" data-tab-target="docker-compose-tab" data-download-target="docker" type="submit"><i class="icon docker-icon"></i>Docker</button>
+                                <button class="btn btn-primary col-sm-3 js-download" data-tab-target="bash-tab" data-download-target="bash" type="submit"><i class="icon tux-icon"></i>Bash</button>
+                                <button class="btn btn-primary col-sm-3 js-download" data-tab-target="macos-tab" data-download-target="macos" type="submit"><i class="icon macos-icon"></i>MacOS</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </p>
             </form>
 
-            <div>
-                <div id="js-generated"></div>
-            </div>
+            <p>
+                <div id="js-generated-content-container" class="generated-content-container">
+                    <ul class="nav nav-tabs" id="generated" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="docker-compose-tab" data-toggle="tab" href="#docker-compose-content" role="tab" aria-controls="docker-compose-content" aria-selected="true">Docker</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="bash-tab" data-toggle="tab" href="#bash-content" role="tab" aria-controls="bash-content" aria-selected="false">Bash</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="macos-tab" data-toggle="tab" href="#macos-content" role="tab" aria-controls="macos-content" aria-selected="false">MacOS</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="generatedContent">
+                        <div class="tab-pane fade show active" id="docker-compose-content" role="tabpanel" aria-labelledby="docker-compose-tab">
+                            <pre class="pre-scrollable"><code id="docker-compose-yml"></code></pre>
+                        </div>
+                        <div class="tab-pane fade" id="bash-content" role="tabpanel" aria-labelledby="bash-tab">
+                            <pre class="pre-scrollable"><code id="bash-script"></code></pre>
+                        </div>
+                        <div class="tab-pane fade" id="macos-content" role="tabpanel" aria-labelledby="macos-tab">
+                            <pre class="pre-scrollable"><code id="macos-script"></code></pre>
+                        </div>
+                    </div>
+                </div>
+            </p>
 
         </div>
 

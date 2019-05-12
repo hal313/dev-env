@@ -1,12 +1,16 @@
 import { ALL_APPS } from './constants.js';
 
-export function parseEnvironmentFromQueryString(queryString, defaultPort) {
+// TODO: This is mostly duplicate code from index.js:generateDefinition; can these be combined - or at least share some of the same logic to generate the same definition schema?
+export function parseEnvironmentFromQueryString(queryString, defaults) {
     let descriptor = {
         apps: {
           use: [],
           dev: []
         },
-        port: defaultPort
+        port: defaults.port,
+        networkName: defaults.networkName,
+        containerPrefix: defaults.containerPrefix,
+        containerSuffix: defaults.containerSuffix
       }
 
     queryString.split('&').forEach(specifier => {
@@ -15,6 +19,15 @@ export function parseEnvironmentFromQueryString(queryString, defaultPort) {
         switch (type) {
           case 'port':
             descriptor.port = Number.parseInt(value, 10);
+            break;
+          case 'network-name':
+            descriptor.networkName = value;
+            break;
+          case 'container-prefix':
+            descriptor.containerPrefix = value;
+            break;
+          case 'container-suffix':
+            descriptor.containerSuffix = value;
             break;
           case 'use':
           case 'dev':
@@ -36,6 +49,15 @@ export function configureEnvironment($, descriptor) {
 
     // Set the port
     $('#port').val(descriptor.port);
+
+    // Set the network name
+    $('#network-name').val(descriptor.networkName);
+
+    // Set the container prefix
+    $('#container-prefix').val(descriptor.containerPrefix);
+
+    // Set the container suffix
+    $('#container-suffix').val(descriptor.containerSuffix);
 
     // Select the apps
     //

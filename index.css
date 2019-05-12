@@ -21,3 +21,11 @@
 .icon.docker-icon {
     background-image: url('assets/docker.svg');
 }
+
+.icon.macos-icon {
+    background-image: url('assets/macos.svg');
+}
+
+.generated-content-container {
+    display: none;
+}

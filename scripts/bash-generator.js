@@ -1,7 +1,6 @@
 import { generateDockerComposeFile } from './docker-generator.js';
 
 export function generateBashScript(definition) {
-  console.log(definition)
   let bashFile = `#!/bin/sh
 
 ## Stop on error
