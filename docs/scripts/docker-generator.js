@@ -86,6 +86,14 @@ services:
   proxy:
     image: hal313/reverse-proxy:latest
     container_name: ${definition.containerPrefix || ''}reverse-proxy${definition.containerSuffix || ''}
+    depends_on:
+      - html01
+      - html02
+      - html03
+      - remote01
+      - remote02
+      - remote03
+      - ide
     networks:
       - ${definition.networkName}
     ports:
