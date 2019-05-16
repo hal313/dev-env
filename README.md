@@ -12,6 +12,16 @@ Either running locally or against the GitHub Pages site (located at https://hal3
 
 > IMPORTANT: If the `docker-compose.yml` file is being used manually AND any components are being "developed", the `PROJECT_ROOT` environment variable MUST be set to the root of the GIT repositories for the required development components. The downloadable scripts will automatically clone the required git repositories and set the variable. It is HIGHLY recommended that the scripts are used.
 
+## "Bookmarks"
+
+The [generator](https://hal313.github.io/dev-env/) can parse query strings to pre-define an environment.
+
+Using the `dev` or `use` parameter any number of times, with the components as values. For example, to specify that the `html-01` and `remote-01` components are to be available for development, this URL will select the correct settings:
+
+https://hal313.github.io/dev-env/?dev=html-01&dev=remote-01
+
+Note that if `use` is specified at least once, all components *except* for the specified component(s) will be deselected.
+
 ### Docker Compose Notes
 
 The Docker command `docker-compose` will build an environment based on a `docker-compose.yml` file. The command:
@@ -59,6 +69,25 @@ Start the environment:
 
 ```bash
 docker-compose up
+```
+
+## Development Tips
+
+Using tools such [browser-sync](https://www.browsersync.io/) or [ngrok](https://ngrok.com/) can greately reduce the development cycle. A tool such as "browser-sync" allows multiple browsers to react to one set of inputs; this is ideal for testing across multiple browsers.
+
+```bash
+## Install:
+npm install -g browser-sync
+
+## Run against the local dev-env instance:
+browser-sync start --proxy localhost:10080 --files html-01/app/*
+```
+
+Tools similar to "ngrok" can be used to test mobile or remote devices against the local machines by tunneling traffic. Once downloaded, run the binary file:
+
+```bash
+## Run against the local dev-env instance:
+ngrok http 10080
 ```
 
 ## TODO
