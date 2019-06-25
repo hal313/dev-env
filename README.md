@@ -12,6 +12,10 @@ Either running locally or against the GitHub Pages site (located at https://hal3
 
 > IMPORTANT: If the `docker-compose.yml` file is being used manually AND any components are being "developed", the `PROJECT_ROOT` environment variable MUST be set to the root of the GIT repositories for the required development components. The downloadable scripts will automatically clone the required git repositories and set the variable. It is HIGHLY recommended that the scripts are used.
 
+### Prerequisites
+
+It is required to have both [Docker](https://www.docker.com/) as well as [docker-compose](https://docs.docker.com/compose/) installed.
+
 ## "Bookmarks"
 
 The [generator](https://hal313.github.io/dev-env/) can parse query strings to pre-define an environment.
@@ -91,11 +95,13 @@ ngrok http 10080
 ```
 
 ## TODO
+
 Muliple instances of generated environments cannot exist at the same time on any system because the container names will collide between environments.
 
 While this generator supports prefix and suffix additions to the container names, the [proxy](https://github.com/hal313/reverse-proxy) does not.
 
 Two solutions would be sufficient:
+
 1. Configure the proxy to dynamically forward based on the URL
 2. Generate the proxy configuration file for each download
 

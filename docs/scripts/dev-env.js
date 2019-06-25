@@ -56,6 +56,9 @@ $(() => {
     }
   });
 
+  /**
+   * Generate the definition for the environment.
+   */
   let generateDefinition = () => {
     let selectedUseApps = [];
     let selectedDevApps = [];
@@ -82,6 +85,12 @@ $(() => {
     };
   };
 
+  /**
+   * Downloads a file to the user.
+   *
+   * @param {String} content the content to download
+   * @param {String} filename the filename to download as
+   */
   let download = (content, filename) => {
     let downloadElement = document.createElement('a');
     downloadElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));

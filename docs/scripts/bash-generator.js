@@ -1,5 +1,11 @@
 import { generateDockerComposeFile } from './docker-generator.js';
 
+/**
+ * Generates a bash script which starts the Docker environment.
+ *
+ * @param {*} definition the definition to generate the bash script for
+ * @returns {String} a bash script which will create and run a docker-compose.yml file
+ */
 export function generateBashScript(definition) {
   let bashFile = `#!/bin/sh
 
@@ -8,6 +14,7 @@ set -e
 
 `;
 
+  // Clone the repos
   definition.apps.dev.forEach(app => {
     bashFile += `
 if [ ! -d "${app}" ]; then
