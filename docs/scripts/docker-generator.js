@@ -109,9 +109,9 @@ let generateIDETemplate = appsDescriptor => {
   }
   return `
   ide:
-    image: codercom/code-server:1.621
+    image: codercom/code-server:latest
     container_name: ${appsDescriptor.containerPrefix}ide${appsDescriptor.containerSuffix}
-    command: --allow-http --no-auth
+    command: --auth none --bind-addr 0.0.0.0:8443 project
     networks:
       - ${appsDescriptor.networkName}
 ${volumes}
